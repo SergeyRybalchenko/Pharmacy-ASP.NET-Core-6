@@ -3,6 +3,7 @@ using Pharmacy.Models;
 using System.Diagnostics;
 using Pharmacy.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Pharmacy.Controllers
 {
@@ -24,9 +25,11 @@ namespace Pharmacy.Controllers
             return View(NewProducts);
         }
 
-        public IActionResult Privacy()
+        [Authorize(Roles = "Administrator")]
+        public IActionResult AdminPanel()
         {
             return View();
         }
+
     }
 }

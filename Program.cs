@@ -12,8 +12,10 @@ var connectionString = builder.Configuration.GetConnectionString("IdentityDBCont
 builder.Services.AddDbContext<IdentityDBContext>(options =>
     options.UseSqlServer(connectionString));
 
-builder.Services.AddDefaultIdentity<PharmacyUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<IdentityDBContext>();;
+builder.Services.AddDefaultIdentity<PharmacyUser>(options => options.SignIn.RequireConfirmedAccount = false)
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<IdentityDBContext>()
+    ;;
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
