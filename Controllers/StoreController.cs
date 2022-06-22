@@ -11,10 +11,7 @@ namespace Pharmacy.Controllers
     {
         private readonly ApplicationDBContext _context;
 
-        public StoreController(ApplicationDBContext context)
-        {
-            _context = context;
-        }
+        public StoreController(ApplicationDBContext context) => _context = context;       
 
         public async Task<IActionResult> Index(string SearchString, string SortType)
         {
