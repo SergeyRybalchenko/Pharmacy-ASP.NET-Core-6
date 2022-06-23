@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Pharmacy.Data;
 using Pharmacy.Domain.Entities;
+using Pharmacy.Models;
 
 namespace Pharmacy.Controllers
 {
@@ -22,8 +23,25 @@ namespace Pharmacy.Controllers
 
         // GET: ProductsAdmin
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> Index() =>
-            View(await _context.Products.ToListAsync());
+        public async Task<IActionResult> Index(int pg = 1)
+        {
+            var products = await _context.Products.ToListAsync();
+
+            const int pageSize = 9;
+
+            if (pg < 1) pg = 1;
+            int recsCount = products.Count();
+
+            var pager = new PagerViewModel(recsCount, pg, pageSize);
+
+            int recSkip = (pg - 1) * pageSize;
+
+            products = products.Skip(recSkip).Take(pager.PageSize).ToList();
+
+            ViewBag.Pager = pager;
+
+            return View(products);
+        }
 
 
         // GET: ProductsAdmin/Details/5
@@ -31,7 +49,7 @@ namespace Pharmacy.Controllers
         public async Task<IActionResult> Details(Guid? id)
         {
             var product = await _context.Products
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.ProductId == id);
 
             return product == null ? NotFound() : View(product);
         }
@@ -51,7 +69,7 @@ namespace Pharmacy.Controllers
         {
             if (ModelState.IsValid)
             {
-                product.Id = Guid.NewGuid();
+                product.ProductId = Guid.NewGuid();
                 product.CreatedAt = DateTime.Now;
                 _context.Add(product);
                 await _context.SaveChangesAsync();
@@ -77,7 +95,7 @@ namespace Pharmacy.Controllers
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name,Description,Price,ImagePath,Count,CreatedAt")] Product product)
         {
-            if (id != product.Id)
+            if (id != product.ProductId)
             {
                 return NotFound();
             }
@@ -91,7 +109,7 @@ namespace Pharmacy.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProductExists(product.Id))
+                    if (!ProductExists(product.ProductId))
                     {
                         return NotFound();
                     }
@@ -115,7 +133,7 @@ namespace Pharmacy.Controllers
             }
 
             var product = await _context.Products
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.ProductId == id);
             if (product == null)
             {
                 return NotFound();
@@ -146,7 +164,7 @@ namespace Pharmacy.Controllers
 
         private bool ProductExists(Guid id)
         {
-          return (_context.Products?.Any(e => e.Id == id)).GetValueOrDefault();
+          return (_context.Products?.Any(e => e.ProductId == id)).GetValueOrDefault();
         }
     }
 }

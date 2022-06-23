@@ -3,6 +3,15 @@
 @{
     ViewData["Title"] = "Products Table";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    PagerViewModel pager = new PagerViewModel();
+
+    int pageNo = 0;
+
+    if(ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNo = pager.CurrentPage;
+    }
 }
 <div class="container-fluid d-flex h-100 justify-content-center align-items-center p-0">
     <h1>Products table</h1>
@@ -57,12 +66,29 @@
                 @Html.DisplayFor(modelItem => item.CreatedAt)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.ProductId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.ProductId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.ProductId">Delete</a>
             </td>
         </tr>
 }
     </tbody>
 </table>
+
+        @if (pager.TotalPages > 0)
+        {
+            <div class="row mt-5">
+                <div class="col-md-12 text-center">
+                    <div class="site-block-27">
+                        <ul>
+                            @for(var pge = pager.StartPage; pge <= pager.EndPage; pge++){
+                                <li class=@(pge==pager.CurrentPage ? "active" : "")>
+                                    <a asp-controller="ProductsAdmin" asp-action ="Index" asp-route-pg="@pge">@pge</a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        }
 </div>

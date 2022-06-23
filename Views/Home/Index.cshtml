@@ -73,8 +73,8 @@
         @for(var i = 4; i < 10; i++){
           var product = Model.ElementAt(i);
           <div class="col-sm-6 col-lg-4 text-center item mb-4">
-            <a asp-action = "Details" asp-controller="Store" asp-route-id="@product.Id"> <img src="@product.ImagePath" alt="Image"></a>
-            <h3 class="text-dark"><a asp-action = "Details" asp-controller="Store" asp-route-id="@product.Id">@product.Name</a></h3>
+            <a asp-action = "Details" asp-controller="Store" asp-route-id="@product.ProductId"> <img src="@product.ImagePath" alt="Image"></a>
+            <h3 class="text-dark"><a asp-action = "Details" asp-controller="Store" asp-route-id="@product.ProductId">@product.Name</a></h3>
             <p class="price">$@product.Price</p>
           </div>
         }
@@ -101,8 +101,8 @@
                 @for(var i = 0; i < 4; i++){
                     var product = Model.ElementAt(i);
                     <div class="text-center item mb-4">
-                        <a asp-action = "Details" asp-controller="Store" asp-route-id="@product.Id"> <img src="@product.ImagePath" alt="Image"></a>
-                        <h3 class="text-dark"><a asp-action = "Details" asp-controller="Store" asp-route-id="@product.Id">@product.Name</a></h3>
+                        <a asp-action = "Details" asp-controller="Store" asp-route-id="@product.ProductId"> <img src="@product.ImagePath" alt="Image"></a>
+                        <h3 class="text-dark"><a asp-action = "Details" asp-controller="Store" asp-route-id="@product.ProductId">@product.Name</a></h3>
                         <p class="price">$@product.Price</p>
                     </div>
                 }

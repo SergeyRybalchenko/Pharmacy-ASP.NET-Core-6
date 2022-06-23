@@ -60,7 +60,7 @@ namespace Pharmacy.Controllers
             {
                 model.Add(new StoreProductViewModel
                 {
-                    Id = products[i].Id,
+                    Id = products[i].ProductId,
                     Name = products[i].Name,
                     Price = products[i].Price,
                     ImagePath = products[i].ImagePath
@@ -73,13 +73,13 @@ namespace Pharmacy.Controllers
 
         public async Task<IActionResult> Details(Guid id)
         {
-            var product = await _context.Products.FirstOrDefaultAsync(x => x.Id == id);
+            var product = await _context.Products.FirstOrDefaultAsync(x => x.ProductId == id);
             
             if(product == null) return NotFound();
 
             StoreSingleProductViewModel model = new StoreSingleProductViewModel 
             { 
-                Id = product.Id,
+                Id = product.ProductId,
                 Name = product.Name, 
                 Description = product.Description, 
                 Count = product.Count, 

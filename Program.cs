@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("IdentityDBContextConnection") ?? throw new InvalidOperationException("Connection string 'IdentityDBContextConnection' not found.");
 
 builder.Services.AddDbContext<IdentityDBContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseSqlServer(connectionString));;
 
 builder.Services.AddDefaultIdentity<PharmacyUser>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddRoles<IdentityRole>()

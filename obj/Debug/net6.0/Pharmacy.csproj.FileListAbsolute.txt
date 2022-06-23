@@ -274,3 +274,4 @@ C:\Users\MagicBook\source\repos\Ocherednyara\Ocherednyara\obj\Debug\net6.0\Pharm
 C:\Users\MagicBook\source\repos\Ocherednyara\Ocherednyara\obj\Debug\net6.0\Pharmacy.genruntimeconfig.cache
 C:\Users\MagicBook\source\repos\Ocherednyara\Ocherednyara\obj\Debug\net6.0\ref\Pharmacy.dll
 C:\Users\MagicBook\source\repos\Ocherednyara\Ocherednyara\obj\Debug\net6.0\scopedcss\Views\Shared\_IdentityLayout.cshtml.rz.scp.css
+C:\Users\MagicBook\source\repos\Ocherednyara\Ocherednyara\obj\Debug\net6.0\scopedcss\Areas\Identity\Pages\Account\Manage\_IdentityLayout.cshtml.rz.scp.css
