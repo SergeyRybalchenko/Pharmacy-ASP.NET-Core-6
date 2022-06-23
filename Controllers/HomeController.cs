@@ -18,11 +18,11 @@ namespace Pharmacy.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
-        {
+        public async Task<IActionResult> Index() { 
+            var products = await _context.Products.OrderByDescending(x => x.CreatedAt).Take(4).ToListAsync();
             var BestProducts = await _context.Products.OrderBy(x => x.Price).Take(6).ToListAsync();
-            var NewProducts = await _context.Products.OrderBy(x => x.CreatedAt).Take(4).ToListAsync();
-            return View(NewProducts);
+            foreach(var product in BestProducts) products.Add(product);
+            return View(products);
         }
 
         [Authorize(Roles = "Administrator")]
