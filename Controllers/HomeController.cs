@@ -20,7 +20,7 @@ namespace Pharmacy.Controllers
 
         public async Task<IActionResult> Index() { 
             var products = await _context.Products.OrderByDescending(x => x.CreatedAt).Take(4).ToListAsync();
-            var BestProducts = await _context.Products.OrderBy(x => x.Price).Take(6).ToListAsync();
+            var BestProducts = await _context.Products.OrderByDescending(x => x.Price).Take(6).ToListAsync();
             foreach(var product in BestProducts) products.Add(product);
             return View(products);
         }

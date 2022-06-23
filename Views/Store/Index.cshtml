@@ -5,7 +5,16 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-  
+    PagerViewModel pager = new PagerViewModel();
+
+    int pageNo = 0;
+
+    if(ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNo = pager.CurrentPage;
+    }
+
 }
 <div class="bg-light py-3">
       <div class="container">
@@ -57,23 +66,26 @@
         </div>
     @if (Model.Count != 0)
     {
-        <div class="row mt-5">
-            <div class="col-md-12 text-center">
-                <div class="site-block-27">
-                    <ul>
-                        <li><a href="#">&lt;</a></li>
-                        <li class="active"><span>1</span></li>
-                        <li><a href="#">2</a></li>
-                        <li><a href="#">3</a></li>
-                        <li><a href="#">4</a></li>
-                        <li><a href="#">5</a></li>
-                        <li><a href="#">&gt;</a></li>
-                    </ul>
+        @if (pager.TotalPages > 0)
+        {
+            <div class="row mt-5">
+                <div class="col-md-12 text-center">
+                    <div class="site-block-27">
+                        <ul>
+                            @for(var pge = pager.StartPage; pge <= pager.EndPage; pge++){
+                                <li class=@(pge==pager.CurrentPage ? "active" : "")>
+                                    <a asp-controller="Store" asp-action ="Index" asp-route-pg="@pge">@pge</a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
+        }
     }
 </div>
+
+
 
 
     

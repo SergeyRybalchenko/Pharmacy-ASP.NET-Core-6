@@ -13,9 +13,22 @@ namespace Pharmacy.Controllers
 
         public StoreController(ApplicationDBContext context) => _context = context;       
 
-        public async Task<IActionResult> Index(string SearchString, string SortType)
+        public async Task<IActionResult> Index(string SearchString, string SortType, int pg = 1)
         {
             var products = await _context.Products.ToListAsync();
+
+            const int pageSize = 9;
+
+            if (pg < 1) pg = 1;
+            int recsCount = products.Count();
+
+            var pager = new PagerViewModel(recsCount, pg, pageSize);
+
+            int recSkip = (pg - 1) * pageSize;
+
+            products = products.Skip(recSkip).Take(pager.PageSize).ToList();
+
+            ViewBag.Pager = pager;
 
             List<StoreProductViewModel> model = new List<StoreProductViewModel> { };
 
