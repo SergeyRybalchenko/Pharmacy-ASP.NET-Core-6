@@ -12,8 +12,8 @@ using Pharmacy.Data;
 namespace Pharmacy.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20220623163125_ColumnRename")]
-    partial class ColumnRename
+    [Migration("20220623175411_MessageUpdate")]
+    partial class MessageUpdate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -224,6 +224,37 @@ namespace Pharmacy.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("Pharmacy.Domain.Entities.ContactMessage", b =>
+                {
+                    b.Property<Guid>("MessageId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Subject")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("MessageId");
+
+                    b.ToTable("ContactMessages");
                 });
 
             modelBuilder.Entity("Pharmacy.Domain.Entities.Product", b =>

@@ -93,7 +93,7 @@ namespace Pharmacy.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name,Description,Price,ImagePath,Count,CreatedAt")] Product product)
+        public async Task<IActionResult> Edit(Guid id, [Bind("ProductId,Name,Description,Price,ImagePath,Count,CreatedAt")] Product product)
         {
             if (id != product.ProductId)
             {

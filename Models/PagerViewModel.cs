@@ -17,6 +17,7 @@
         public PagerViewModel(int totalItems, int page, int pageSize = 10)
         {
             int totalPages = (int)(Math.Ceiling((decimal)totalItems / (decimal)pageSize));
+
             int currentPage = page;
 
             int startPage = currentPage - 5;
