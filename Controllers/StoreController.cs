@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Pharmacy.Models;
-using Pharmacy.Data;
 using Pharmacy.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Pharmacy.Service;
+using Pharmacy.Domain;
 
 namespace Pharmacy.Controllers
 {
@@ -11,82 +12,35 @@ namespace Pharmacy.Controllers
     {
         private readonly ApplicationDBContext _context;
 
-        public StoreController(ApplicationDBContext context) => _context = context;       
-
-        public async Task<IActionResult> Index(string SearchString, string SortType, int pg = 1)
+        public StoreController(ApplicationDBContext context)
         {
-            var products = await _context.Products.ToListAsync();
+            _context = context;
+        }       
 
-            const int pageSize = 9;
+        public async Task<IActionResult> Index(string SearchString, string SortType, int PageNumber = 1)
+        { 
+            var ProductService = new ProductServices(_context);
+            var PagerService = new PagerServices();
 
-            if (pg < 1) pg = 1;
-            int recsCount = products.Count();
+            var Products = ProductService.GetStoreProductViewModel(SortType, SearchString);
+            var Pager = PagerService.GetPagerViewModel(PageNumber, Products);
+            Products = PagerService.SkipProducts(Pager, Products, PageNumber);
 
-            var pager = new PagerViewModel(recsCount, pg, pageSize);
+            ViewBag.Pager = Pager;
 
-            int recSkip = (pg - 1) * pageSize;
-
-            products = products.Skip(recSkip).Take(pager.PageSize).ToList();
-
-            ViewBag.Pager = pager;
-
-            List<StoreProductViewModel> model = new List<StoreProductViewModel> { };
-
-            ViewData["CurrentFilter"] = SearchString;
-
-            if (!String.IsNullOrEmpty(SearchString))
-            {
-                products = products.Where(p => p.Name.ToLower().Contains(SearchString.ToLower())).ToList();
-            }
-
-            if (SortType != null)
-                switch (SortType)
-                {
-                    case "Name, A to Z":
-                        products = products.OrderBy(p => p.Name).ToList();
-                        break;
-                    case "Name, Z to A":
-                        products = products.OrderByDescending(p => p.Name).ToList();
-                        break;
-                    case "Price, low to high":
-                        products = products.OrderBy(p => p.Price).ToList();
-                        break;
-                    case "Price, high to low":
-                        products = products.OrderByDescending(p => p.Price).ToList();
-                        break;
-                }
-
-            for (var i = 0; i < products.Count; i++)
-            {
-                model.Add(new StoreProductViewModel
-                {
-                    Id = products[i].ProductId,
-                    Name = products[i].Name,
-                    Price = products[i].Price,
-                    ImagePath = products[i].ImagePath
-                });
-            }
-
-
-            return View(model);
+            return View(Products);
         }
 
+        /// <summary>
+        /// Returns info about product by id
+        /// </summary>
+        /// <param name="id">Product identifier</param>
+        /// <returns>Detail product info</returns>
         public async Task<IActionResult> Details(Guid id)
         {
-            var product = await _context.Products.FirstOrDefaultAsync(x => x.ProductId == id);
-            
-            if(product == null) return NotFound();
-
-            StoreSingleProductViewModel model = new StoreSingleProductViewModel 
-            { 
-                Id = product.ProductId,
-                Name = product.Name, 
-                Description = product.Description, 
-                Count = product.Count, 
-                Price = product.Price,
-                ImagePath = product.ImagePath
-            };
-            return View(model);
+            var ProductService = new ProductServices(_context);
+            var Product = ProductService.GetStoreSingleProductViewModel(id);
+            return Product == null ? NotFound() : View(Product);
         }
     }
 }

@@ -5,9 +5,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Pharmacy.Data;
 using Pharmacy.Areas.Identity.Data;
+using Pharmacy.Domain;
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("IdentityDBContextConnection") ?? throw new InvalidOperationException("Connection string 'IdentityDBContextConnection' not found.");
+var connectionString = builder.Configuration.GetConnectionString("ConnectionString") ?? throw new InvalidOperationException("Connection string 'IdentityDBContextConnection' not found.");
 
 builder.Services.AddDbContext<IdentityDBContext>(options =>
     options.UseSqlServer(connectionString));;

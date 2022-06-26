@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Pharmacy.Domain.Entities;
-using Pharmacy.Data;
 using Microsoft.EntityFrameworkCore;
+using Pharmacy.Domain;
 
 namespace Pharmacy.Controllers
 {
@@ -16,34 +16,19 @@ namespace Pharmacy.Controllers
 
         public IActionResult Index() => View();
 
-        public async Task<IActionResult> SendMessage([Bind("MessageId, FirstName, LastName, Email, Subject, Message")] ContactMessage message)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SendMessage(ContactMessage message)
         {
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(message);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ProductExists(message.MessageId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                message.MessageId = Guid.NewGuid();
+                _context.Add(message);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(message);
+            return Index();
         }
 
-        private bool ProductExists(Guid id)
-        {
-            return (_context.ContactMessages?.Any(e => e.MessageId == id)).GetValueOrDefault();
-        }
     }
 }

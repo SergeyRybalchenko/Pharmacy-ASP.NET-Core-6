@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Pharmacy.Domain.Entities;
-using Pharmacy.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
-namespace Pharmacy.Data
+namespace Pharmacy.Domain
 {
-    public class ApplicationDBContext : IdentityDbContext
+    public class ApplicationDBContext : IdentityDbContext<IdentityUser>
     {
 
         public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options) : base(options) { }
 
         public DbSet<ContactMessage> ContactMessages { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
     }
 }

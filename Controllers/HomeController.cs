@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Pharmacy.Models;
 using System.Diagnostics;
-using Pharmacy.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using Pharmacy.Domain;
 
 namespace Pharmacy.Controllers
 {

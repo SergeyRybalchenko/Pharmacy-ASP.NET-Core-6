@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Pharmacy.Data;
+using Pharmacy.Domain;
 using Pharmacy.Domain.Entities;
 using Pharmacy.Models;
 

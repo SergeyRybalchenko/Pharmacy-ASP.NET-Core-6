@@ -74,7 +74,7 @@
                         <ul>
                             @for(var pge = pager.StartPage; pge <= pager.EndPage; pge++){
                                 <li class=@(pge==pager.CurrentPage ? "active" : "")>
-                                    <a asp-controller="Store" asp-action ="Index" asp-route-pg="@pge">@pge</a>
+                                    <a asp-controller="Store" asp-action ="Index" asp-route-PageNumber="@pge">@pge</a>
                                 </li>
                             }
                         </ul>

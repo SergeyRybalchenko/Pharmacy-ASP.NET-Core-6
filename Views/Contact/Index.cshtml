@@ -1,6 +1,4 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model Pharmacy.Domain.Entities.ContactMessage;
 @{
 }
 <div class="bg-light py-3">
@@ -22,36 +20,41 @@
           </div>
           <div class="col-md-12">
     
-            <form action="#" method="post">
-    
+            <form asp-action="SendMessage">
               <div class="p-3 p-lg-5 border">
-                <div class="form-group row">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group row">    
                   <div class="col-md-6">
-                    <label for="c_fname" class="text-black">First Name <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="c_fname" name="c_fname">
+                    <label asp-for="@Model.FirstName" class="text-black">First Name <span class="text-danger">*</span></label>
+                    <input asp-for="@Model.FirstName" class="form-control">
+                    <span asp-validation-for="@Model.FirstName" class="text-danger"></span>
                   </div>
                   <div class="col-md-6">
-                    <label for="c_lname" class="text-black">Last Name <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="c_lname" name="c_lname">
+                    <label asp-for="@Model.LastName" class="text-black">Last Name <span class="text-danger">*</span></label>
+                    <input asp-for="@Model.LastName" class="form-control">
+                    <span asp-validation-for="@Model.LastName" class="text-danger"></span>
                   </div>
                 </div>
                 <div class="form-group row">
                   <div class="col-md-12">
-                    <label for="c_email" class="text-black">Email <span class="text-danger">*</span></label>
-                    <input type="email" class="form-control" id="c_email" name="c_email" placeholder="">
+                    <label asp-for="@Model.Email" class="text-black">Email <span class="text-danger">*</span></label>
+                    <input asp-for="@Model.Email" class="form-control">
+                    <span asp-validation-for="@Model.Email" class="text-danger"></span>
                   </div>
                 </div>
                 <div class="form-group row">
                   <div class="col-md-12">
-                    <label for="c_subject" class="text-black">Subject </label>
-                    <input type="text" class="form-control" id="c_subject" name="c_subject">
+                    <label asp-for="@Model.Subject" class="text-black">Subject </label>
+                    <input asp-for="@Model.Subject" type="text" class="form-control">
+                    <span asp-validation-for="@Model.Subject" class="text-danger"></span>
                   </div>
                 </div>
     
                 <div class="form-group row">
                   <div class="col-md-12">
-                    <label for="c_message" class="text-black">Message </label>
-                    <textarea name="c_message" id="c_message" cols="30" rows="7" class="form-control"></textarea>
+                    <label asp-for="@Model.Message" class="text-black">Message </label>
+                    <textarea asp-for="@Model.Message" cols="30" rows="7" class="form-control"></textarea>
+                    <span asp-validation-for="@Model.Message" class="text-danger"></span>
                   </div>
                 </div>
                 <div class="form-group row">
