@@ -19,6 +19,13 @@ namespace Pharmacy.Controllers
             _pagerService = pagerService;
         }
 
+        /// <summary>
+        /// Returns info about all products or about found products
+        /// </summary>
+        /// <param name="SearchString">Product search string</param>
+        /// <param name="SortType">Sort type</param>
+        /// <param name="PageNumber">Number of page</param>
+        /// <returns>List of ProductViewModels</returns>
         public async Task<IActionResult> Index(string SearchString, string SortType, int PageNumber = 1)
         { 
             var Products = _productService.GetStoreProductViewModel(SortType, SearchString);

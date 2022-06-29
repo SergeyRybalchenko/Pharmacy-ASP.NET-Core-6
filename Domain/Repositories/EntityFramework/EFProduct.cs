@@ -14,7 +14,7 @@ namespace Pharmacy.Domain.Repositories.EntityFramework
             _context = context;
         }
 
-        public List<Product> GetProducts(string SearchString)
+        public List<Product> GetProducts(string? SearchString = null)
         {
 
             var result = new List<Product> { };
@@ -33,18 +33,24 @@ namespace Pharmacy.Domain.Repositories.EntityFramework
 
         public Product GetProductById(Guid Id)
         {
-            return _context.Products.FirstOrDefault(x => x.ProductId == Id);
+            return _context.Products.AsNoTracking().FirstOrDefault(x => x.ProductId == Id);
         }
 
-        public void SaveProduct(Product product)
+        public void AddProduct(Product product)
         {
-            _context.Entry(product).State = product.ProductId == default ? EntityState.Added : EntityState.Modified;
+            _context.Products.Add(product);
             _context.SaveChanges();
         }
 
-        public void DeleteProduct(Guid Id)
+        public void EditProduct(Product product)
         {
-            _context.Products.Remove(new Product() { ProductId = Id });
+            _context.Update(product);
+            _context.SaveChanges();
+        }
+
+        public void DeleteProduct(Product product)
+        {
+            _context.Products.Remove(new Product() { ProductId = product.ProductId });
             _context.SaveChanges();
         }
 

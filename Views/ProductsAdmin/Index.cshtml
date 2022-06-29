@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Pharmacy.Domain.Entities.Product>
+﻿@model IEnumerable<Pharmacy.Models.AdminProductViewModel>
 
 @{
     ViewData["Title"] = "Products Table";
@@ -83,7 +83,7 @@
                         <ul>
                             @for(var pge = pager.StartPage; pge <= pager.EndPage; pge++){
                                 <li class=@(pge==pager.CurrentPage ? "active" : "")>
-                                    <a asp-controller="ProductsAdmin" asp-action ="Index" asp-route-pg="@pge">@pge</a>
+                                    <a asp-controller="ProductsAdmin" asp-action ="Index" asp-route-PageNumber="@pge">@pge</a>
                                 </li>
                             }
                         </ul>

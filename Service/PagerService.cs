@@ -1,4 +1,5 @@
-﻿using Pharmacy.Models;
+﻿using Pharmacy.Domain.Entities;
+using Pharmacy.Models;
 using Pharmacy.Service.Abstract;
 
 namespace Pharmacy.Service
@@ -7,7 +8,13 @@ namespace Pharmacy.Service
     {
         private const int PageSize = 9;
 
-        public PagerViewModel GetPagerViewModel(int PageNumber, List<StoreProductViewModel> Products)
+        /// <summary>
+        /// Return PagerViewModel to use it in View and skip some products
+        /// </summary>
+        /// <param name="PageNumber">Current page</param>
+        /// <param name="Products">List of T</param>
+        /// <returns>PagerViewModel</returns>
+        public PagerViewModel GetPagerViewModel<T>(int PageNumber, List<T> Products)
         {
             
             if (PageNumber < 1) PageNumber = 1;
@@ -19,7 +26,14 @@ namespace Pharmacy.Service
             return Pager;
         }
 
-        public List<StoreProductViewModel> SkipProducts(PagerViewModel Pager, List<StoreProductViewModel> Products, int PageNumber)
+        /// <summary>
+        /// Skips a certain number of products to the сurrent page
+        /// </summary>
+        /// <param name="Pager">PagerViewModel created by GetPagerViewModel</param>
+        /// <param name="Products">List of T to skip some products</param>
+        /// <param name="PageNumber">Current page</param>
+        /// <returns>List of T for PageNumber page</returns>
+        public List<T> SkipProducts<T>(PagerViewModel Pager, List<T> Products, int PageNumber)
         {
             int TotalRowsSkip = (PageNumber - 1) * PageSize;
 

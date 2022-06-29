@@ -9,16 +9,23 @@ namespace Pharmacy.Service
 {
     public class ProductService : IProductService
     {
-        private readonly DataManager _dataManger;
+        private readonly DataManager _dataManager;
 
         public ProductService(DataManager dataManager)
         {
-            _dataManger = dataManager;
+            _dataManager = dataManager;
         }
 
+
+        /// <summary>
+        /// Returns list of StoreProductViewModel to use it in Store Index View
+        /// </summary>
+        /// <param name="SortType">Sort type</param>
+        /// <param name="SearchString">Product search string</param>
+        /// <returns>List of StoreProductViewModels</returns>
         public List<StoreProductViewModel> GetStoreProductViewModel(string SortType, string SearchString)
         {
-            var result = _dataManger.Products.GetProducts(SearchString)
+            var result = _dataManager.Products.GetProducts(SearchString)
               .Select(x => new StoreProductViewModel
               {
                   Id = x.ProductId,
@@ -48,9 +55,31 @@ namespace Pharmacy.Service
             return result;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public List<AdminProductViewModel> GetAdminProductViewModels()       
+            => _dataManager.Products.GetProducts("").Select(x => new AdminProductViewModel
+            {
+                ProductId = x.ProductId,
+                Name = x.Name,
+                Description = x.Description,
+                Price = x.Price,
+                ImagePath = x.ImagePath,
+                Count = x.Count,
+                CreatedAt = x.CreatedAt
+            }).ToList();
+        
+
+        /// <summary>
+        /// Return more info about product to show it in details
+        /// </summary>
+        /// <param name="Id">Product identifier</param>
+        /// <returns>StoreSingleProductViewModel</returns>
         public StoreSingleProductViewModel GetStoreSingleProductViewModel(Guid Id)
         {
-            var test = _dataManger.Products.GetProductById(Id);
+            var test = _dataManager.Products.GetProductById(Id);
 
             var result = new StoreSingleProductViewModel 
             {
@@ -64,5 +93,72 @@ namespace Pharmacy.Service
 
             return result;
         }
+
+        public AdminProductViewModel GetAdminProductViewModel(Guid Id)
+        {
+            var test = _dataManager.Products.GetProductById(Id);
+
+            var result = new AdminProductViewModel
+            {
+                ProductId = test.ProductId,
+                Name = test.Name,
+                Description = test.Description,
+                Price = test.Price,
+                ImagePath = test.ImagePath,
+                Count = test.Count,
+                CreatedAt = test.CreatedAt
+            };
+
+            return result;
+        }
+
+        public void AddProduct(AdminProductViewModel product)
+        {
+            var newProduct = new Product
+            {
+                ProductId = product.ProductId,
+                Name = product.Name,
+                Description = product.Description,
+                Price = product.Price,
+                ImagePath = product.ImagePath,
+                Count = product.Count,
+                CreatedAt = product.CreatedAt
+            };
+
+            _dataManager.Products.AddProduct(newProduct);
+        }
+
+        public void DeleteProduct(AdminProductViewModel product)
+        {
+            var delProduct = new Product
+            {
+                ProductId = product.ProductId,
+                Name = product.Name,
+                Description = product.Description,
+                Price = product.Price,
+                ImagePath = product.ImagePath,
+                Count = product.Count,
+                CreatedAt = product.CreatedAt
+            };
+
+            _dataManager.Products.DeleteProduct(delProduct);
+        }
+
+        public void EditProduct(AdminProductViewModel product)
+        {
+            var editProduct = new Product
+            {
+                ProductId = product.ProductId,
+                Name = product.Name,
+                Description = product.Description,
+                Price = product.Price,
+                ImagePath = product.ImagePath,
+                Count = product.Count,
+                CreatedAt = product.CreatedAt
+            };
+
+            _dataManager.Products.EditProduct(editProduct);
+        }
+
     }
 }

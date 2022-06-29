@@ -9,48 +9,42 @@ using Microsoft.EntityFrameworkCore;
 using Pharmacy.Domain;
 using Pharmacy.Domain.Entities;
 using Pharmacy.Models;
+using Pharmacy.Service.Abstract;
 
 namespace Pharmacy.Controllers
 {
     public class ProductsAdminController : Controller
     {
-        private readonly ApplicationDBContext _context;
+        private readonly IPagerService _pagerService;
+        private readonly IProductService _productService;
+        private const int pageSize = 9;
 
-        public ProductsAdminController(ApplicationDBContext context)
+        public ProductsAdminController(IPagerService pagerService, IProductService productService)
         {
-            _context = context;
+            _pagerService = pagerService;
+            _productService = productService;
         }
 
         // GET: ProductsAdmin
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> Index(int pg = 1)
+        public IActionResult Index(int PageNumber = 1)
         {
-            var products = await _context.Products.ToListAsync();
 
-            const int pageSize = 9;
+            var Products = _productService.GetAdminProductViewModels();
+            var Pager = _pagerService.GetPagerViewModel(PageNumber, Products);
+            Products = _pagerService.SkipProducts(Pager, Products, PageNumber);
 
-            if (pg < 1) pg = 1;
-            int recsCount = products.Count();
+            ViewBag.Pager = Pager;
 
-            var pager = new PagerViewModel(recsCount, pg, pageSize);
-
-            int recSkip = (pg - 1) * pageSize;
-
-            products = products.Skip(recSkip).Take(pager.PageSize).ToList();
-
-            ViewBag.Pager = pager;
-
-            return View(products);
+            return View(Products);
         }
 
 
         // GET: ProductsAdmin/Details/5
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> Details(Guid? id)
+        public IActionResult Details(Guid id)
         {
-            var product = await _context.Products
-                .FirstOrDefaultAsync(m => m.ProductId == id);
-
+            var product = _productService.GetAdminProductViewModel(id);
             return product == null ? NotFound() : View(product);
         }
 
@@ -60,19 +54,16 @@ namespace Pharmacy.Controllers
 
 
         // POST: ProductsAdmin/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Price,ImagePath,Count,CreatedAt")] Product product)
+        public IActionResult Create([Bind("ProductId,Name,Description,Price,ImagePath,Count,CreatedAt")] AdminProductViewModel product)
         {
             if (ModelState.IsValid)
             {
                 product.ProductId = Guid.NewGuid();
                 product.CreatedAt = DateTime.Now;
-                _context.Add(product);
-                await _context.SaveChangesAsync();
+                _productService.AddProduct(product);
                 return RedirectToAction(nameof(Index));
             }
             return View(product);
@@ -80,20 +71,18 @@ namespace Pharmacy.Controllers
 
         // GET: ProductsAdmin/Edit/5
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> Edit(Guid? id)
+        public IActionResult Edit(Guid id)
         {
-            var product = await _context.Products.FindAsync(id);
+            var product = _productService.GetAdminProductViewModel(id);
 
             return product == null ? NotFound() : View(product);
         }
 
         // POST: ProductsAdmin/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> Edit(Guid id, [Bind("ProductId,Name,Description,Price,ImagePath,Count,CreatedAt")] Product product)
+        public IActionResult Edit(Guid id, [Bind("ProductId,Name,Description,Price,ImagePath,Count,CreatedAt")] AdminProductViewModel product)
         {
             if (id != product.ProductId)
             {
@@ -102,22 +91,7 @@ namespace Pharmacy.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(product);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ProductExists(product.ProductId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                _productService.EditProduct(product);        
                 return RedirectToAction(nameof(Index));
             }
             return View(product);
@@ -125,46 +99,26 @@ namespace Pharmacy.Controllers
 
         // GET: ProductsAdmin/Delete/5
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> Delete(Guid? id)
+        public IActionResult Delete(Guid id)
         {
-            if (id == null || _context.Products == null)
-            {
-                return NotFound();
-            }
-
-            var product = await _context.Products
-                .FirstOrDefaultAsync(m => m.ProductId == id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-
-            return View(product);
+            var product = _productService.GetAdminProductViewModel(id);
+            return product == null ? NotFound() : View(product);
         }
 
         // POST: ProductsAdmin/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        public IActionResult DeleteConfirmed(Guid id)
         {
-            if (_context.Products == null)
-            {
-                return Problem("Entity set 'ApplicationDBContext.Products'  is null.");
-            }
-            var product = await _context.Products.FindAsync(id);
+            var product = _productService.GetAdminProductViewModel(id);
+
             if (product != null)
             {
-                _context.Products.Remove(product);
+                _productService.DeleteProduct(product);
             }
             
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool ProductExists(Guid id)
-        {
-          return (_context.Products?.Any(e => e.ProductId == id)).GetValueOrDefault();
         }
     }
 }
