@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Pharmacy.Domain
 {
-    public class ApplicationDBContext : IdentityDbContext<IdentityUser>
+    public class ApplicationDBContext : DbContext
     {
 
         public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options) : base(options) { }

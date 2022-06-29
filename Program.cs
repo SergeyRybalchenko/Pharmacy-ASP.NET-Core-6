@@ -6,6 +6,10 @@ using Microsoft.Extensions.Configuration;
 using Pharmacy.Data;
 using Pharmacy.Areas.Identity.Data;
 using Pharmacy.Domain;
+using Pharmacy.Service;
+using Pharmacy.Service.Abstract;
+using Pharmacy.Domain.Repositories.Abstract;
+using Pharmacy.Domain.Repositories.EntityFramework;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("ConnectionString") ?? throw new InvalidOperationException("Connection string 'IdentityDBContextConnection' not found.");
@@ -18,11 +22,20 @@ builder.Services.AddDefaultIdentity<PharmacyUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<IdentityDBContext>()
     ;;
 
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
     
 builder.Services.AddDbContext<ApplicationDBContext>(options => 
     options.UseSqlServer(builder.Configuration.GetConnectionString("ConnectionString")));
+
+builder.Services.AddTransient<IPagerService, PagerService>();
+builder.Services.AddTransient<IProducts, EFProduct>();
+builder.Services.AddTransient<DataManager>();
+builder.Services.AddTransient<IProductService, ProductService>();
+
+
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 

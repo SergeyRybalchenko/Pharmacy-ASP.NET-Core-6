@@ -1,4 +1,5 @@
 ﻿using Pharmacy.Domain.Repositories.Abstract;
+using Pharmacy.Service.Abstract;
 
 namespace Pharmacy.Domain
 {

@@ -4,27 +4,26 @@ using Pharmacy.Models;
 using Pharmacy.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Pharmacy.Service;
-using Pharmacy.Domain;
+using Pharmacy.Service.Abstract;
 
 namespace Pharmacy.Controllers
 {
     public class StoreController : Controller
     {
-        private readonly ApplicationDBContext _context;
+        private readonly IProductService _productService;
+        private readonly IPagerService _pagerService;
 
-        public StoreController(ApplicationDBContext context)
+        public StoreController(IProductService productService, IPagerService pagerService)
         {
-            _context = context;
-        }       
+            _productService = productService;
+            _pagerService = pagerService;
+        }
 
         public async Task<IActionResult> Index(string SearchString, string SortType, int PageNumber = 1)
         { 
-            var ProductService = new ProductServices(_context);
-            var PagerService = new PagerServices();
-
-            var Products = ProductService.GetStoreProductViewModel(SortType, SearchString);
-            var Pager = PagerService.GetPagerViewModel(PageNumber, Products);
-            Products = PagerService.SkipProducts(Pager, Products, PageNumber);
+            var Products = _productService.GetStoreProductViewModel(SortType, SearchString);
+            var Pager = _pagerService.GetPagerViewModel(PageNumber, Products);
+            Products = _pagerService.SkipProducts(Pager, Products, PageNumber);
 
             ViewBag.Pager = Pager;
 
@@ -38,8 +37,7 @@ namespace Pharmacy.Controllers
         /// <returns>Detail product info</returns>
         public async Task<IActionResult> Details(Guid id)
         {
-            var ProductService = new ProductServices(_context);
-            var Product = ProductService.GetStoreSingleProductViewModel(id);
+            var Product = _productService.GetStoreSingleProductViewModel(id);
             return Product == null ? NotFound() : View(Product);
         }
     }

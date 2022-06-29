@@ -3,23 +3,22 @@ using Pharmacy.Domain.Repositories.EntityFramework;
 using Pharmacy.Data;
 using Pharmacy.Models;
 using Pharmacy.Domain;
+using Pharmacy.Service.Abstract;
 
 namespace Pharmacy.Service
 {
-    public class ProductServices
+    public class ProductService : IProductService
     {
-        private readonly ApplicationDBContext _context;
+        private readonly DataManager _dataManger;
 
-        public ProductServices(ApplicationDBContext context)
+        public ProductService(DataManager dataManager)
         {
-            _context = context;
+            _dataManger = dataManager;
         }
 
         public List<StoreProductViewModel> GetStoreProductViewModel(string SortType, string SearchString)
         {
-            var product = new EFProduct(_context);
-
-            var result = product.GetProducts(SearchString)
+            var result = _dataManger.Products.GetProducts(SearchString)
               .Select(x => new StoreProductViewModel
               {
                   Id = x.ProductId,
@@ -51,9 +50,7 @@ namespace Pharmacy.Service
 
         public StoreSingleProductViewModel GetStoreSingleProductViewModel(Guid Id)
         {
-            var product = new EFProduct(_context);
-
-            var test = product.GetProductById(Id);
+            var test = _dataManger.Products.GetProductById(Id);
 
             var result = new StoreSingleProductViewModel 
             {

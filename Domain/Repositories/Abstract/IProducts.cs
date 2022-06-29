@@ -10,3 +10,4 @@ namespace Pharmacy.Domain.Repositories.Abstract
         public void DeleteProduct(Guid Id);
     }
 }
+    
