@@ -28,7 +28,7 @@ namespace Pharmacy.Controllers
         /// <returns>List of ProductViewModels</returns>
         public async Task<IActionResult> Index(string SearchString, string SortType, int PageNumber = 1)
         { 
-            var Products = _productService.GetStoreProductViewModel(SortType, SearchString);
+            var Products = await _productService.GetStoreProductViewModel(SortType, SearchString);
             var Pager = _pagerService.GetPagerViewModel(PageNumber, Products);
             Products = _pagerService.SkipProducts(Pager, Products, PageNumber);
 
@@ -44,7 +44,7 @@ namespace Pharmacy.Controllers
         /// <returns>Detail product info</returns>
         public async Task<IActionResult> Details(Guid id)
         {
-            var Product = _productService.GetStoreSingleProductViewModel(id);
+            var Product = await _productService.GetStoreSingleProductViewModel(id);
             return Product == null ? NotFound() : View(Product);
         }
     }

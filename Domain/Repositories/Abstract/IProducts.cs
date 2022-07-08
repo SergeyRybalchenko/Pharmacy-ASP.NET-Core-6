@@ -4,11 +4,11 @@ namespace Pharmacy.Domain.Repositories.Abstract
 {
     public interface IProducts
     {
-        List<Product> GetProducts(string SearchString);
-        public Product GetProductById(Guid Id);
-        public void AddProduct(Product product);
-        public void EditProduct(Product product);
-        public void DeleteProduct(Product product);
+        public Task<List<Product>> GetProducts(string SearchString);
+        public Task<Product> GetProductById(Guid Id);
+        public Task AddProduct(Product product);
+        public Task EditProduct(Product product);   
+        public Task DeleteProduct(Product product);
     }
 }
     

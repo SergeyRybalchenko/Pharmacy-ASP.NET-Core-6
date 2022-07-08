@@ -34,7 +34,6 @@ builder.Services.AddTransient<IProducts, EFProduct>();
 builder.Services.AddTransient<DataManager>();
 builder.Services.AddTransient<IProductService, ProductService>();
 
-
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Pharmacy.Domain;
+using Pharmacy.Service.Abstract;
 
 namespace Pharmacy.Controllers
 {
@@ -11,17 +12,17 @@ namespace Pharmacy.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDBContext _context;
+        private readonly IProductService _productService;
 
-        public HomeController(ILogger<HomeController> logger, ApplicationDBContext context)
+        public HomeController(ILogger<HomeController> logger, ApplicationDBContext context, IProductService productService)
         {
             _logger = logger;
             _context = context;
+            _productService = productService;
         }
 
-        public async Task<IActionResult> Index() { 
-            var products = await _context.Products.OrderByDescending(x => x.CreatedAt).Take(4).ToListAsync();
-            var BestProducts = await _context.Products.OrderByDescending(x => x.Price).Take(6).ToListAsync();
-            foreach(var product in BestProducts) products.Add(product);
+        public async Task<IActionResult> Index() {       
+            var products = await _productService.GetHomeStoreProductViewModelList();
             return View(products);
         }
 

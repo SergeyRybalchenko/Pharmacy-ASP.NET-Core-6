@@ -23,10 +23,11 @@ namespace Pharmacy.Service
         /// <param name="SortType">Sort type</param>
         /// <param name="SearchString">Product search string</param>
         /// <returns>List of StoreProductViewModels</returns>
-        public List<StoreProductViewModel> GetStoreProductViewModel(string SortType, string SearchString)
+        public async Task<List<StoreProductViewModel>> GetStoreProductViewModel(string SortType, string SearchString)
         {
-            var result = _dataManager.Products.GetProducts(SearchString)
-              .Select(x => new StoreProductViewModel
+            var products = await _dataManager.Products.GetProducts(SearchString);
+
+            var Result = products.Select(x => new StoreProductViewModel
               {
                   Id = x.ProductId,
                   Name = x.Name,
@@ -37,30 +38,33 @@ namespace Pharmacy.Service
             switch (SortType)
             {
                 case "Name, A to Z":
-                    result = result.OrderBy(p => p.Name).ToList();
+                    Result = Result.OrderBy(p => p.Name).ToList();
                     break;
                 case "Name, Z to A":
-                    result = result.OrderByDescending(p => p.Name).ToList();
+                    Result = Result.OrderByDescending(p => p.Name).ToList();
                     break;
                 case "Price, low to high":
-                    result = result.OrderBy(p => p.Price).ToList();
+                    Result = Result.OrderBy(p => p.Price).ToList();
                     break;
                 case "Price, high to low":
-                    result = result.OrderByDescending(p => p.Price).ToList();
+                    Result = Result.OrderByDescending(p => p.Price).ToList();
                     break;
                 default:
                     break;
             }
 
-            return result;
+            return Result;
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        public List<AdminProductViewModel> GetAdminProductViewModels()       
-            => _dataManager.Products.GetProducts("").Select(x => new AdminProductViewModel
+        public async Task<List<AdminProductViewModel>> GetAdminProductViewModels()
+        {
+            var result = await _dataManager.Products.GetProducts("");
+
+            return result.Select(x => new AdminProductViewModel
             {
                 ProductId = x.ProductId,
                 Name = x.Name,
@@ -70,16 +74,16 @@ namespace Pharmacy.Service
                 Count = x.Count,
                 CreatedAt = x.CreatedAt
             }).ToList();
-        
+        }
 
         /// <summary>
         /// Return more info about product to show it in details
         /// </summary>
         /// <param name="Id">Product identifier</param>
         /// <returns>StoreSingleProductViewModel</returns>
-        public StoreSingleProductViewModel GetStoreSingleProductViewModel(Guid Id)
+        public async Task<StoreSingleProductViewModel> GetStoreSingleProductViewModel(Guid Id)
         {
-            var test = _dataManager.Products.GetProductById(Id);
+            var test = await _dataManager.Products.GetProductById(Id);
 
             var result = new StoreSingleProductViewModel 
             {
@@ -94,9 +98,9 @@ namespace Pharmacy.Service
             return result;
         }
 
-        public AdminProductViewModel GetAdminProductViewModel(Guid Id)
+        public async Task<AdminProductViewModel> GetAdminProductViewModel(Guid Id)
         {
-            var test = _dataManager.Products.GetProductById(Id);
+            var test = await _dataManager.Products.GetProductById(Id);
 
             var result = new AdminProductViewModel
             {
@@ -107,12 +111,12 @@ namespace Pharmacy.Service
                 ImagePath = test.ImagePath,
                 Count = test.Count,
                 CreatedAt = test.CreatedAt
-            };
+            };  
 
             return result;
         }
 
-        public void AddProduct(AdminProductViewModel product)
+        public async Task AddProduct(AdminProductViewModel product)
         {
             var newProduct = new Product
             {
@@ -125,10 +129,10 @@ namespace Pharmacy.Service
                 CreatedAt = product.CreatedAt
             };
 
-            _dataManager.Products.AddProduct(newProduct);
+            await _dataManager.Products.AddProduct(newProduct);
         }
 
-        public void DeleteProduct(AdminProductViewModel product)
+        public async Task DeleteProduct(AdminProductViewModel product)
         {
             var delProduct = new Product
             {
@@ -141,10 +145,10 @@ namespace Pharmacy.Service
                 CreatedAt = product.CreatedAt
             };
 
-            _dataManager.Products.DeleteProduct(delProduct);
+            await _dataManager.Products.DeleteProduct(delProduct);
         }
 
-        public void EditProduct(AdminProductViewModel product)
+        public async Task EditProduct(AdminProductViewModel product)
         {
             var editProduct = new Product
             {
@@ -157,7 +161,28 @@ namespace Pharmacy.Service
                 CreatedAt = product.CreatedAt
             };
 
-            _dataManager.Products.EditProduct(editProduct);
+            await _dataManager.Products.EditProduct(editProduct);
+        }
+
+        public async Task<List<StoreProductViewModel>> GetHomeStoreProductViewModelList()
+        {
+            var Products = await _dataManager.Products.GetProducts("");
+            var BestProducts = await _dataManager.Products.GetProducts("");
+
+            Products = Products.OrderByDescending(x => x.CreatedAt).Take(4).ToList();
+            BestProducts = BestProducts.OrderByDescending(x => x.Price).Take(6).ToList();
+
+            foreach (var product in BestProducts) Products.Add(product);
+
+            var storeProductViewModels = Products.Select(x => new StoreProductViewModel
+            {
+                Id = x.ProductId,
+                Name = x.Name,
+                Price = x.Price,
+                ImagePath = x.ImagePath,
+            }).ToList();
+
+            return storeProductViewModels;
         }
 
     }

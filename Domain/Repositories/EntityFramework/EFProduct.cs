@@ -10,48 +10,42 @@ namespace Pharmacy.Domain.Repositories.EntityFramework
         private readonly ApplicationDBContext _context;
 
         public EFProduct(ApplicationDBContext context)
+            => _context = context;
+      
+
+        public async Task<List<Product>> GetProducts(string? SearchString = null)
         {
-            _context = context;
+
+            var result = _context.Products.AsQueryable();
+
+            if (!string.IsNullOrEmpty(SearchString))      
+                result = result.Where(p => p.Name.ToLower().Contains(SearchString.ToLower()));     
+           
+            return await result.ToListAsync();
         }
 
-        public List<Product> GetProducts(string? SearchString = null)
+        public async Task<Product> GetProductById(Guid Id)
         {
-
-            var result = new List<Product> { };
-
-            if (!string.IsNullOrEmpty(SearchString))
-            {
-                result = _context.Products.Where(p => p.Name.ToLower().Contains(SearchString.ToLower())).ToList();
-            }
-            else
-            {
-                result = _context.Products.ToList();
-            }
-
-            return result;
+            var test = await _context.Products.AsNoTracking().FirstOrDefaultAsync(x => x.ProductId == Id);
+            return test;
         }
 
-        public Product GetProductById(Guid Id)
-        {
-            return _context.Products.AsNoTracking().FirstOrDefault(x => x.ProductId == Id);
-        }
-
-        public void AddProduct(Product product)
+        public async Task AddProduct(Product product)
         {
             _context.Products.Add(product);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void EditProduct(Product product)
+        public async Task EditProduct(Product product)
         {
             _context.Update(product);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void DeleteProduct(Product product)
-        {
+        public async Task DeleteProduct(Product product)
+        {       
             _context.Products.Remove(new Product() { ProductId = product.ProductId });
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
     }

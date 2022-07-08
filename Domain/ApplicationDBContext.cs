@@ -13,7 +13,6 @@ namespace Pharmacy.Domain
 
         public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options) : base(options) { }
 
-        public DbSet<ContactMessage> ContactMessages { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
     }

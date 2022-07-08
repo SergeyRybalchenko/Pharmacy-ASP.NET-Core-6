@@ -1,4 +1,4 @@
-﻿
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Pharmacy.Domain.Entities
 {
@@ -9,6 +9,7 @@ namespace Pharmacy.Domain.Entities
         public Guid UserId { get; set; }
         public int Count { get; set; }
 
-        public Product Product { get; set; }
+        //[Required]
+        //public Product Product { get; set; }
     }
 }
