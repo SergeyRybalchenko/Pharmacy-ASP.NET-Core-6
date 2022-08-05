@@ -1,2 +1,2 @@
 # Pharmacy-ASP.NET-Core-6-MVC
- ASP.NET Core 6 + EFCore + Microsoft SQL Server
+Интернет магазин аптеки с использованием ASP.NET Core 6, Entity Framework Core, Microsoft SQL Server
